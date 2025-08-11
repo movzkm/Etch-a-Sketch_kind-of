@@ -1,0 +1,28 @@
+body {
+    background-color: darkgray;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+}
+
+button {
+    width: 25px;
+    height: 25px;
+    border: 1px solid black;
+    border-radius: 7px;
+}
+
+#fallingContainer {
+    background-color: pink;
+    border: 3px solid black;
+    height: 500px;
+    width: 500px;
+}
+
+#options {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 10px;
+}
