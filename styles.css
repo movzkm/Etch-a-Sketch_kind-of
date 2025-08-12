@@ -13,7 +13,7 @@ button {
     border-radius: 7px;
 }
 
-#fallingContainer {
+#canvas {
     background-color: pink;
     border: 3px solid black;
     height: 500px;
