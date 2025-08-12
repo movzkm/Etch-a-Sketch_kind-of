@@ -3,6 +3,7 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    gap: 10px;
 }
 
 button {
@@ -15,8 +16,7 @@ button {
 #canvas {
     background-color: pink;
     border: 3px solid black;
-    height: 500px;
-    width: 500px;
+    
 }
 
 #options {

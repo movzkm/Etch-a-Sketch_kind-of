@@ -7,6 +7,9 @@ const rock = 3;
 const rows = 50;
 const columns = 50;
 
+const width = 10;
+const height = 10;
+
 let currentX = 0;
 let currentY = 0;
 let mouseDown = false;
@@ -16,15 +19,16 @@ const grid = [];
 const stack = [];
 
 const canvas = document.querySelector("#canvas");
+const context = canvas.getContext("2d");
+canvas.width = 500;
+canvas.height = 500;
 const boundingRect = canvas.getBoundingClientRect();
 const minX = Math.floor(boundingRect.left);
 const minY = Math.floor(boundingRect.top);
 const maxX = Math.floor(boundingRect.right);
 const maxY = Math.floor(boundingRect.bottom);
 
-const context = canvas.getContext("2d");
 
-const inputChecker = document.querySelector("#inputChecker");
 
 /*
 logic:
@@ -77,13 +81,19 @@ document.querySelector("html").addEventListener("mousemove", event => {
     setPosition(event.clientX, event.clientY);
 })
 
+function createObject() {
+    let row = Math.floor(currentX / width) * width;
+    let column = Math.floor(currentY / height) * height;
+    stack.push({type: sand, x: row, y: column});
+    console.log(row, column);
+}
 
 function update() {
     if (validMouseInput) {
-        inputChecker.textContent = "valid";
+        createObject();
     }
-    else {
-        inputChecker.textContent = "INVALID";
+    for (let i = 0; i < stack.length; i += 1) {
+        context.fillRect(stack[i].x, stack[i].y, width, height);
     }
 }
 
