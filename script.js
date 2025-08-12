@@ -6,11 +6,16 @@ const rock = 3;
 
 const colors = ["black", "yellow", "cyan"];
 
-const rows = 50;
-const columns = 50;
+const canvas = document.querySelector("#canvas");
+let context = canvas.getContext("2d");
+canvas.width = 750;
+canvas.height = 750;
 
-const width = 10;
-const height = 10;
+const width = 5;
+const height = 5;
+
+const xPositions = Math.floor(canvas.width / width);
+const yPositions = Math.floor(canvas.height / height);
 
 let currentX = 0;
 let currentY = 0;
@@ -20,15 +25,7 @@ let validMouseInput = false;
 const grid = [];
 const stack = [];
 
-const canvas = document.querySelector("#canvas");
-let context = canvas.getContext("2d");
-canvas.width = 500;
-canvas.height = 500;
-let boundingRect = canvas.getBoundingClientRect();
-let minX = Math.floor(boundingRect.left);
-let minY = Math.floor(boundingRect.top);
-let maxX = Math.floor(boundingRect.right);
-let maxY = Math.floor(boundingRect.bottom);
+
 
 function resetPositions() {
     boundingRect = canvas.getBoundingClientRect();
@@ -40,7 +37,7 @@ function resetPositions() {
 
 /*
 logic:
-- we have a total of rows * columns boxes
+- we have a total of xPositions * yPositions boxes
 - when the player press on the area specified an object is inserted
 - and the logic for the particles start
 - a stack containing the objects inserted and their positions
@@ -52,9 +49,9 @@ function createGrid() {
     /*
         creating the 2d array
     */
-   for (let i = 0; i < rows; i += 1) {
+   for (let i = 0; i < xPositions; i += 1) {
     grid[i] = [];
-    for (let j = 0; j < columns ; j += 1) {
+    for (let j = 0; j < yPositions ; j += 1) {
         grid[i][j] = 0;
     }
    }
@@ -90,23 +87,23 @@ document.querySelector("html").addEventListener("mousemove", event => {
 })
 
 function createObject() {
-    let rowNumber = Math.floor(currentX / width);
-    let columnNumber = Math.floor(currentY / height);
+    let xPosition = Math.floor(currentX / width);
+    let yPosition = Math.floor(currentY / height);
 
-    if (rowNumber >= rows) {
-        rowNumber = rows - 1;
+    if (xPosition >= xPositions) {
+        xPosition = xPositions - 1;
     }
-    if (columnNumber >= columns) {
-        columnNumber = columns - 1;
+    if (yPosition >= yPositions) {
+        yPosition = yPositions - 1;
     }
 
-    if (grid[rowNumber][columnNumber] == 0) {
-        stack.push({type: sand, row: rowNumber, column: columnNumber});
-        grid[rowNumber][columnNumber] = sand;
+    if (grid[xPosition][yPosition] == 0) {
+        stack.push({type: sand, x: xPosition, y: yPosition});
+        grid[xPosition][yPosition] = sand;
     }
 }
 
-function updateSand(index, r, c) {
+function updateSand(index, xIn, yIn) {
     /*
     sand logic:
     - check bottom
@@ -114,30 +111,29 @@ function updateSand(index, r, c) {
     - check bottom right
     */
 
-    const bottom = c + 1;
-    const left = r - 1;
-    const right = r + 1;
+    const bottom = yIn + 1;
+    const left = xIn - 1;
+    const right = xIn + 1;
 
     /*check bottom*/
-   if (grid[r][bottom] == 0) {
-        grid[r][bottom] = sand;
-        grid[r][c] = 0;
-        stack[index].row = r;
-        stack[index].column = bottom;
+   if (grid[xIn][bottom] == 0) {
+        grid[xIn][bottom] = sand;
+        grid[xIn][yIn] = 0;
+        stack[index].x = xIn;
+        stack[index].y = bottom;
    }
    else if (left >= 0 && grid[left][bottom] == 0) {
         grid[left][bottom] = sand;
-        grid[r][c] = 0;
-        stack[index].row = left;
-        stack[index].column = bottom;
+        grid[xIn][yIn] = 0;
+        stack[index].x = left;
+        stack[index].y = bottom;
    }
-   else if(right < rows && grid[right][bottom] == 0 ) {
+   else if(right < xPositions && grid[right][bottom] == 0 ) {
         grid[right][bottom] = sand;
-        grid[r][c] = 0;
-        stack[index].row = right;
-        stack[index].column = bottom;
+        grid[xIn][yIn] = 0;
+        stack[index].x = right;
+        stack[index].y = bottom;
    }
-   console.log(stack.length);
 }
 
 function update() {
@@ -150,12 +146,12 @@ function update() {
 
         switch (stack[i].type) {
             case sand:
-                updateSand(i, stack[i].row, stack[i].column);
+                updateSand(i, stack[i].x, stack[i].y);
                 break;
         }
-        context.fillRect(stack[i].row * width, stack[i].column * height, width, height);
+        context.fillRect(stack[i].x * width, stack[i].y * height, width, height);
     }
 }
 
 createGrid();
-setInterval(update, 50);
+setInterval(update, 10);
