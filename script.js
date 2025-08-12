@@ -19,16 +19,23 @@ const grid = [];
 const stack = [];
 
 const canvas = document.querySelector("#canvas");
-const context = canvas.getContext("2d");
+let context = canvas.getContext("2d");
 canvas.width = 500;
 canvas.height = 500;
-const boundingRect = canvas.getBoundingClientRect();
-const minX = Math.floor(boundingRect.left);
-const minY = Math.floor(boundingRect.top);
-const maxX = Math.floor(boundingRect.right);
-const maxY = Math.floor(boundingRect.bottom);
+let boundingRect = canvas.getBoundingClientRect();
+let minX = Math.floor(boundingRect.left);
+let minY = Math.floor(boundingRect.top);
+let maxX = Math.floor(boundingRect.right);
+let maxY = Math.floor(boundingRect.bottom);
 
 
+window.addEventListener("resize", () => {
+    boundingRect = canvas.getBoundingClientRect();
+    minX = Math.floor(boundingRect.left);
+    minY = Math.floor(boundingRect.top);
+    maxX = Math.floor(boundingRect.right);
+    maxY = Math.floor(boundingRect.bottom);
+});
 
 /*
 logic:
@@ -82,10 +89,9 @@ document.querySelector("html").addEventListener("mousemove", event => {
 })
 
 function createObject() {
-    let row = Math.floor(currentX / width) * width;
-    let column = Math.floor(currentY / height) * height;
-    stack.push({type: sand, x: row, y: column});
-    console.log(row, column);
+    let rowNumber = Math.floor(currentX / width);
+    let columnNumber = Math.floor(currentY / height);
+    stack.push({type: sand, row: rowNumber, column: columnNumber});
 }
 
 function update() {
@@ -93,9 +99,9 @@ function update() {
         createObject();
     }
     for (let i = 0; i < stack.length; i += 1) {
-        context.fillRect(stack[i].x, stack[i].y, width, height);
+        context.fillRect(stack[i].row * width, stack[i].column * height, width, height);
     }
 }
 
 createGrid();
-setInterval(update, 250);
+setInterval(update, 200);
