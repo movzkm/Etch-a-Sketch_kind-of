@@ -4,6 +4,8 @@ const sand = 1;
 const water = 2;
 const rock = 3;
 
+const colors = ["black", "yellow", "cyan"];
+
 const rows = 50;
 const columns = 50;
 
@@ -28,14 +30,13 @@ let minY = Math.floor(boundingRect.top);
 let maxX = Math.floor(boundingRect.right);
 let maxY = Math.floor(boundingRect.bottom);
 
-
-window.addEventListener("resize", () => {
+function resetPositions() {
     boundingRect = canvas.getBoundingClientRect();
     minX = Math.floor(boundingRect.left);
     minY = Math.floor(boundingRect.top);
     maxX = Math.floor(boundingRect.right);
     maxY = Math.floor(boundingRect.bottom);
-});
+}
 
 /*
 logic:
@@ -91,6 +92,14 @@ document.querySelector("html").addEventListener("mousemove", event => {
 function createObject() {
     let rowNumber = Math.floor(currentX / width);
     let columnNumber = Math.floor(currentY / height);
+
+    if (rowNumber >= rows) {
+        rowNumber = rows - 1;
+    }
+    if (columnNumber >= columns) {
+        columnNumber = columns - 1;
+    }
+
     if (grid[rowNumber][columnNumber] == 0) {
         stack.push({type: sand, row: rowNumber, column: columnNumber});
         grid[rowNumber][columnNumber] = sand;
@@ -116,13 +125,13 @@ function updateSand(index, r, c) {
         stack[index].row = r;
         stack[index].column = bottom;
    }
-   else if (grid[left][bottom] == 0) {
+   else if (left >= 0 && grid[left][bottom] == 0) {
         grid[left][bottom] = sand;
         grid[r][c] = 0;
         stack[index].row = left;
         stack[index].column = bottom;
    }
-   else if(grid[right][bottom] == 0 ) {
+   else if(right < rows && grid[right][bottom] == 0 ) {
         grid[right][bottom] = sand;
         grid[r][c] = 0;
         stack[index].row = right;
@@ -133,6 +142,7 @@ function updateSand(index, r, c) {
 
 function update() {
     context.clearRect(0, 0, canvas.width, canvas.height);
+    resetPositions();
     if (validMouseInput) {
         createObject();
     }
@@ -143,10 +153,9 @@ function update() {
                 updateSand(i, stack[i].row, stack[i].column);
                 break;
         }
-
         context.fillRect(stack[i].row * width, stack[i].column * height, width, height);
     }
 }
 
 createGrid();
-setInterval(update, 100);
+setInterval(update, 50);
