@@ -2,12 +2,12 @@ console.log("Hello World!");
 
 const sand = 1;
 const water = 2;
-const rock = 3;
 
 const colors = ["black", "yellow", "cyan"];
 
 const canvas = document.querySelector("#canvas");
 let context = canvas.getContext("2d");
+
 canvas.width = 750;
 canvas.height = 750;
 
@@ -25,7 +25,14 @@ let validMouseInput = false;
 const grid = [];
 const stack = [];
 
+let selectedType = sand;
 
+document.querySelector("#sand").addEventListener("click", () => {
+    selectedType = sand;
+})
+document.querySelector("#water").addEventListener("click", () => {
+    
+})
 
 function resetPositions() {
     boundingRect = canvas.getBoundingClientRect();
@@ -42,7 +49,6 @@ logic:
 - and the logic for the particles start
 - a stack containing the objects inserted and their positions
 - the stack is used to update the positions of objects and the grid
-
 */
 
 function createGrid() {
@@ -98,8 +104,8 @@ function createObject() {
     }
 
     if (grid[xPosition][yPosition] == 0) {
-        stack.push({type: sand, x: xPosition, y: yPosition});
-        grid[xPosition][yPosition] = sand;
+        stack.push({type: selectedType, x: xPosition, y: yPosition});
+        grid[xPosition][yPosition] = selectedType;
     }
 }
 
@@ -149,6 +155,7 @@ function update() {
                 updateSand(i, stack[i].x, stack[i].y);
                 break;
         }
+        context.fillStyle = colors[stack[i].type];
         context.fillRect(stack[i].x * width, stack[i].y * height, width, height);
     }
 }
