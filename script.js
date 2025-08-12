@@ -91,17 +91,62 @@ document.querySelector("html").addEventListener("mousemove", event => {
 function createObject() {
     let rowNumber = Math.floor(currentX / width);
     let columnNumber = Math.floor(currentY / height);
-    stack.push({type: sand, row: rowNumber, column: columnNumber});
+    if (grid[rowNumber][columnNumber] == 0) {
+        stack.push({type: sand, row: rowNumber, column: columnNumber});
+        grid[rowNumber][columnNumber] = sand;
+    }
+}
+
+function updateSand(index, r, c) {
+    /*
+    sand logic:
+    - check bottom
+    - check bottom left
+    - check bottom right
+    */
+
+    const bottom = c + 1;
+    const left = r - 1;
+    const right = r + 1;
+
+    /*check bottom*/
+   if (grid[r][bottom] == 0) {
+        grid[r][bottom] = sand;
+        grid[r][c] = 0;
+        stack[index].row = r;
+        stack[index].column = bottom;
+   }
+   else if (grid[left][bottom] == 0) {
+        grid[left][bottom] = sand;
+        grid[r][c] = 0;
+        stack[index].row = left;
+        stack[index].column = bottom;
+   }
+   else if(grid[right][bottom] == 0 ) {
+        grid[right][bottom] = sand;
+        grid[r][c] = 0;
+        stack[index].row = right;
+        stack[index].column = bottom;
+   }
+   console.log(stack.length);
 }
 
 function update() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
     if (validMouseInput) {
         createObject();
     }
     for (let i = 0; i < stack.length; i += 1) {
+
+        switch (stack[i].type) {
+            case sand:
+                updateSand(i, stack[i].row, stack[i].column);
+                break;
+        }
+
         context.fillRect(stack[i].row * width, stack[i].column * height, width, height);
     }
 }
 
 createGrid();
-setInterval(update, 200);
+setInterval(update, 100);
