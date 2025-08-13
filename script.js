@@ -161,4 +161,4 @@ function update() {
 }
 
 createGrid();
-setInterval(update, 10);
+setInterval(update, 100);
